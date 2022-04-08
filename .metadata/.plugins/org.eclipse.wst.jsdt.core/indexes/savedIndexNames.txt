@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\Users\Stagiaires10P\Desktop\JSA\Java\M07 - POO avancé\Exos\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+1701427797.index
+2525375701.index
+704391179.index
+1950230754.index
+3693218320.index
+80270405.index

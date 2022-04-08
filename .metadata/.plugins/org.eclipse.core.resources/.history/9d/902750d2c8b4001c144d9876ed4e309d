@@ -1,0 +1,45 @@
+import java.util.Date;
+
+public class FoundException {
+
+	public static void main(String[] args) {
+		Date date = null;
+		Date today = new Date();
+		
+		try {
+			System.out.println(date.getClass().getName());
+		} catch (Exception e ){
+			System.out.println("Ah, problème : " + e);
+		}
+		
+		try {
+			System.out.println(today.getClass().getName());
+		} catch (Exception e ){
+			System.out.println("Ah, problème sur : " + e);
+		}
+		
+		double[] tab = {1.5};
+		System.out.println(moy(tab));
+	}
+	
+	public static double moy(double[] tab) {
+		
+		
+		try {
+			double moyenne = 0;
+			for (int i = 0; i < tab.length; i++) {
+				moyenne += tab[i];
+			}
+			
+			moyenne /= tab.length;
+			
+			return moyenne;
+		} catch(Exception e) {
+			
+			System.out.println("Exception" + e);
+			return 0.0;
+		}
+
+	}
+
+}

@@ -1,0 +1,47 @@
+import java.util.Date;
+
+public class FoundException {
+
+	public static void main(String[] args) {
+		Date date = null;
+		Date today = new Date();
+		
+		try {
+			System.out.println(date.getClass().getName());
+		} catch (Exception e ){
+			System.out.println("Ah, problème : " + e);
+		}
+		
+		try {
+			System.out.println(today.getClass().getName());
+		} catch (Exception e ){
+			System.out.println("Ah, problème sur : " + e);
+		}
+		
+		double[] tab = {};
+		System.out.println(min(tab));
+	}
+	
+	public static double min(double[] tab) {
+		double smaller = 20;
+
+		for (int i = 0; i < tab.length; i++) {
+			if(tab[i] < smaller) {
+				smaller = tab[i];
+			}
+		}
+		return smaller;
+	}
+	
+	public static double max(double[] tab) {
+		double bigger = 0;
+		
+		for (int i = 0; i < tab.length; i++) {
+			if(tab[i] > bigger) {
+				bigger = tab[i];
+			}
+		}
+		return bigger;
+	}
+
+}

@@ -1,0 +1,5 @@
+INDEX VERSION 1.131+C:\Users\Stagiaires10P\Desktop\JSA\Java\M07 - POO avancé\Exos\.metadata\.plugins\org.eclipse.jdt.core
+301030207.index
+2896556301.index
+1865797976.index
+1701427797.index
