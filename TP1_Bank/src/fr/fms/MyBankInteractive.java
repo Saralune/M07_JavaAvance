@@ -20,6 +20,8 @@ import fr.fms.entities.Current;
 import fr.fms.entities.Customer;
 import fr.fms.entities.Saving;
 public class MyBankInteractive {
+	
+	//créer des méthodes ici ?? paiement etc ?
 
 	public static void main(String[] args) {
 		//représente l'activité de notre banque
@@ -40,73 +42,93 @@ public class MyBankInteractive {
 		//Init
 		Scanner scanner = new Scanner(System.in);
 		
-		//Presentation
-		System.out.println("Bienvenue dans votre application de banque interactive !");
-		System.out.println("Saisir un numéro de compte : ");
-		
-		bankJob.checkInt(scanner);
-		long answer = scanner.nextInt();
-		
-		try {			
-			if(bankJob.isAccountExists(answer)) {
-				String name = bankJob.consultAccount(answer).getCustomer().getFirstName();
-				System.out.println("Bienvenue " + name + ", que souhaitez-vous faire ?");
-			} else {
-				throw new Exception("Le compte n'existe pas.");
-			}
+		while(true){
+			//Presentation
+			System.out.println("\nBienvenue dans votre application de banque interactive !");
+			System.out.println("Saisir un numéro de compte : ");
 			
-		} catch(Exception e) {
-			System.out.println("Exception : " + e);
+			bankJob.checkInt(scanner);
+			long answer = scanner.nextInt();
 			
-		} finally {
-			if(bankJob.isAccountExists(answer)) {
-				bankJob.displayMenu();
+			try {			
+				if(bankJob.isAccountExists(answer)) {
+					String name = bankJob.consultAccount(answer).getCustomer().getFirstName();
+					System.out.println("Bienvenue " + name + ", que souhaitez-vous faire ?");
+				} 
 				
-				bankJob.checkInt(scanner);
-				int choice = scanner.nextInt();
-				
-				while(choice != 6) {
-					
-					switch(choice) {
-						case 1 : //versement
-							bankJob.payement(answer, scanner);
-							break;
-							
-						case 2 : //retrait
-							bankJob.withdrawal(answer, scanner);
-							break;
-							
-						case 3 : //virement
-						try {
-							bankJob.customerTransfert(answer, scanner);
-						} catch (Exception e) {
-							System.out.println("Exception : " + e);
-						}
-							break;
-							
-						case 4 : //affichage des infos du compte
-							System.out.println(bankJob.consultAccount(answer));
-							break;
-							
-						case 5 : //Liste des opérations
-							System.out.println(bankJob.listTransactions(answer));
-							break;
-							
-						default: 
-							System.out.println("Merci de renseigner une choix valide.");
-								
-					}
-					
+				if(bankJob.isAccountExists(answer)) {
 					bankJob.displayMenu();
 					
 					bankJob.checkInt(scanner);
-					choice = scanner.nextInt();
-				}
+					int choice = scanner.nextInt();
+					
+					while(choice != 6) {
+						try {
+							switch(choice) {
+								case 1 : //versement
+									System.out.println("Quel montant souhaitez-vous verser ?");
+									
+									bankJob.checkInt(scanner);
+									double amount = scanner.nextInt();
+									
+									bankJob.pay(answer, amount);
+									break;
+									
+								case 2 : //retrait
+									System.out.println("Quel montant souhaitez-vous retirer ?");
+									bankJob.checkInt(scanner);
+									amount = scanner.nextInt();
+									
+									bankJob.withdraw(answer, amount);
+									break;
+									
+								case 3 : //virement
+									//bankJob.customerTransfert(answer, scanner);
+									System.out.println("Saisir le numéro du compte destinataire : ");
 
-			}
-			
-			System.out.println("Au revoir !");
-			scanner.close();
+									bankJob.checkInt(scanner);
+									long accIdDest = scanner.nextInt();
+									
+									System.out.println("Quel montant souhaitez-vous verser ?");
+									
+									bankJob.checkInt(scanner);
+									amount = scanner.nextInt();
+									
+									bankJob.transfert(answer, accIdDest, amount);
+	
+									break;
+									
+								case 4 : //affichage des infos du compte
+									System.out.println(bankJob.consultAccount(answer));
+									break;
+									
+								case 5 : //Liste des opérations
+									for (int i = 0; i < bankJob.listTransactions(answer).size(); i++) {
+										System.out.println(bankJob.listTransactions(answer).get(i));
+									}
+									break;
+									
+								default: 
+									System.out.println("Merci de renseigner un choix valide.");
+										
+							}
+						} catch(Exception e) {
+							System.out.println("Exception : " + e);
+						}
+						
+						bankJob.displayMenu();
+						
+						bankJob.checkInt(scanner);
+						choice = scanner.nextInt();
+					}
+	
+				}
+				
+			} catch(Exception e) {
+				System.out.println("Exception : " + e);
+				
+			} 
+
 		}
 		
 	}

@@ -25,8 +25,11 @@ public class ThreadTime {
     public void run() {
     	while(true) {
 	      try {
-	        Thread.sleep(delai);
+	        
 	        System.out.println(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+	        //System.out.println("\b\b\b\b\b\b\b\b");
+	        //ou boucler sur un println vide
+	        Thread.sleep(delai);
 	      } catch (InterruptedException e) {
 	        e.printStackTrace();
 	      }

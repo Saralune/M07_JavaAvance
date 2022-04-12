@@ -16,6 +16,7 @@ public class TestThread extends Thread {
 		TestThread t5 = new TestThread("5-----");
 		
 		t.start();
+		//t.join(); //pour avoir un thread dans l'ordre : join attend que le thread soit terminé pour passer au suivant
 		t3.start();
 		t4.start();
 		t2.start();

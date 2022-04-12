@@ -2,6 +2,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,11 +13,14 @@ public class Menus {
         	Scanner scanner = new Scanner(System.in);
         	
         	//Init of text object 
-        	File fileOrder = new File("FileOrder.txt");
-        	FileOutputStream file = new FileOutputStream(fileOrder);
-        	DataOutputStream order = new DataOutputStream(file);
+//        	File fileOrder = new File("FileOrder.txt");
+//        	FileOutputStream file = new FileOutputStream(fileOrder);
+//        	DataOutputStream order = new DataOutputStream(file); //à utiliser quand je gère des flux et que je veux que ça aille vite
+        	
             //ObjectOutputStream order = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("order.txt"))));
 
+        	FileWriter writer = new FileWriter("writer.txt");
+        	
 	        //Initialization
 	        String[] entree = {"entrée", "SALADE", "SOUPE", "QUICHE", "AUCUNE"};
 	        String[] plats = {"plat", "POULET", "BOEUF", "POISSON", "VEGETARIEN", "VEGAN", "AUCUN"};
@@ -28,7 +32,7 @@ public class Menus {
 	        //END Initialization
 	        
 	        //if entry is not an int
-	        //while(scanner.hasNextInt() == false) {scanner.next()};
+	        //while(scanner.hasNextInt() == false) {scanner.next();};
 	        System.out.println("Bonjour, combien de menus souhaitez-vous ?");
 	        int nbMenus = scanner.nextInt();
 	
@@ -61,22 +65,28 @@ public class Menus {
 	            System.out.println(choixMenu.values());
 	            System.out.println();
 	            
-	            try {
+	            try { //try catch inutile
 	            	//writeUTF : pour les String ou write Chars pour chaque caractères mais ils sont séparés par des espaces
-	            	order.writeChars("***********Résumé de la commande numéro " + i + " ***********\n");
+	            	//order.writeChars("***********Résumé de la commande numéro " + i + " ***********\n");
+	            	
+	            	writer.write("***********Résumé de la commande numéro " + i + " ***********\n");
+	            	
 	            	for (HashMap.Entry<Integer, String> entry : choixMenu.entrySet()) {
 						String val = entry.getValue();
-						order.writeChars(val + "\n");
+						//order.writeChars(val + "\n");
+						writer.write(val + "\n");
 					}
-	            	order.writeChars("\n");	      
+	            	//order.writeChars("\n");	 
+	            	writer.write("\n");
 	  
 	            } catch(Exception e) {
 	            	System.out.println("Exception : " + e);
 	            }
 	        }
 	        
-	        order.writeChars("Bon appétit !");
-	        order.close();
+	        //order.writeChars("Bon appétit !");
+	        //order.close();
+	        writer.close();
 	        scanner.close();
         
         } catch (Exception e) {

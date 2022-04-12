@@ -51,7 +51,7 @@ public class IBankBusinessImpl implements IBankBusiness {
 	@Override
 	public Account consultAccount(long accountId) {		
 		Account account = accounts.get(accountId);
-		if(account == null)	System.out.println("Vous demandez un compte inexistant !");
+		if(account == null)	throw new RuntimeException("Vous demandez un compte inexistant !");
 		return account;
 	}
 
@@ -65,27 +65,17 @@ public class IBankBusinessImpl implements IBankBusiness {
 		Account account;
 		account = consultAccount(accountId);
 		if(account != null)	{
-			account.setBalance(account.getBalance() + amount);
-			Transaction trans = new Transfert(numTransactions++,new Date(),amount,accountId);
-			account.getListTransactions().add(trans);				// création + ajout d'une opération de versement
-		}
-	}
+			if(amount > 0 ) { //&& amount < 1500 ?
+				account.setBalance(account.getBalance() + amount);
+				Transaction trans = new Transfert(numTransactions++,new Date(),amount,accountId);
+				account.getListTransactions().add(trans);				// création + ajout d'une opération de versement
 	
-	/**
-	 * Méthode d'interaction pour le versement sur un compte spécifié
-	 * @param accountId, scanner
-	 * @throws Exception 
-	 */
-	public void payement(long accountId, Scanner scanner) {
-		System.out.println("Quel montant souhaitez-vous verser ?");
-	
-		checkInt(scanner);
-		double amount = scanner.nextInt();
-		if(amount > 0 ) { //&& amount < 1500
-			pay(accountId, amount);
-			
+			} else {
+				throw new RuntimeException("Le montant du versement doit être supérieur à 0.");
+			}
+
 		} else {
-			System.out.println("Le montant du versement doit être supérieur à 0.");
+			throw new RuntimeException("Le compte n'existe pas.");
 		}
 	}
 
@@ -93,7 +83,6 @@ public class IBankBusinessImpl implements IBankBusiness {
 	 * méthode qui effectue le retrait d'un montant sur un compte existant tout en gérant le découvert autorisé qqsoit le compte
 	 * @param accountId correspond à l'id du compte sur lequel effectuer le retrait
 	 * @param amount correspond au montant à retirer 
-	 * @throws Exception 
 	 */
 	@Override
 	public boolean withdraw(long accountId, double amount){			//retrait
@@ -106,12 +95,16 @@ public class IBankBusinessImpl implements IBankBusiness {
 			}
 			else capacity = account.getBalance();
 			if(amount <= capacity) {
-				account.setBalance(account.getBalance() - amount);
-				Transaction trans = new withdrawal(numTransactions++,new Date(),amount,accountId);
-				account.getListTransactions().add(trans);		// création + ajout d'une opération de retrait
+				if(amount > 0) {
+					account.setBalance(account.getBalance() - amount);
+					Transaction trans = new withdrawal(numTransactions++,new Date(),amount,accountId);
+					account.getListTransactions().add(trans);		// création + ajout d'une opération de retrait
+				} else {
+					throw new RuntimeException("Le montant doit être supérieur à 0.");
+				}
 			}
 			else {
-				System.out.println("vous avez dépassé vos capacités de retrait !");
+				throw new RuntimeException("Vous avez dépassé votre capacité de retrait !");
 			}
 		}	
 		else return false;	//compte inexistant -> retrait impossible
@@ -119,67 +112,30 @@ public class IBankBusinessImpl implements IBankBusiness {
 	}
 	
 	/**
-	 * Méthode d'interaction pour le retrait sur le compte spécifié
-	 * @param accountId, scanner
-	 * @throws Exception 
-	 */
-	public void withdrawal(long accountId, Scanner scanner){
-		System.out.println("Quel montant souhaitez-vous retirer ?");
-		int amount = scanner.nextInt();
-		
-		if(amount > 0) {
-			withdraw(accountId, amount);
-		} else {
-			System.out.println("Le montant doit être supérieur à 0.");
-		}
-	}
-
-	/**
 	 * méthode qui effectue un virement d'un compte src vers un compte dest, décomposé en 2 étapes : retrait puis versement
 	 * @param accIdSrc correspond à l'id du compte source
 	 * @param accIdSrc correspond à l'id du compte destinataire
 	 * @param amount correspond au montant à virer
-	 * @throws Exception 
 	 */
 	@Override
-	public void transfert(long accIdSrc, long accIdDest, double amount) throws Exception {	//virement
-		if(accIdSrc == accIdDest)	throw new Exception("vous ne pouvez retirer et verser sur le même compte !");
-		
-		else {
-			if(withdraw(accIdSrc, amount)) {		//retrait si c'est possible
-				pay(accIdDest, amount);				//alors versement
-			}
-			else throw new Exception("virement impossible");
-		}
-	}
-	
-	/**
-	 * méthode d'intéraction avec l'utilisateur pour effectuer un virement d'un compte src vers un compte dest, décomposé en 2 étapes : retrait puis versement
-	 * @param accIdSrc correspond à l'id du compte source
-	 * @param scanner 
-	 * @throws Exception 
-	 */
-	public void customerTransfert(long accIdSrc, Scanner scanner) throws Exception {	//virement
-		System.out.println("Saisir le numéro du compte destinataire : ");
-
-		checkInt(scanner);
-		long accIdDest = scanner.nextInt();
-		
-		if(isAccountExists(accIdDest)) {			
-			System.out.println("Quel montant souhaitez-vous verser ?");
-			
-			checkInt(scanner);
-			int amount = scanner.nextInt();
-			
-			if(amount > 0) {
-				transfert(accIdSrc, accIdDest, amount);
-			} else {
-				System.out.println("Le montant doit être supérieur à 0.");
-			}
+	public void transfert(long accIdSrc, long accIdDest, double amount){	//virement
+		if (isAccountExists(accIdDest));
+		if(accIdSrc == accIdDest){
+			throw new RuntimeException("vous ne pouvez retirer et verser sur le même compte !");
 			
 		} else {
-			throw new Exception("Le numéro de compte n'existe pas.");
-		}		
+			
+			if(withdraw(accIdSrc, amount)) {		//retrait si c'est possible
+				if(amount > 0) {
+					pay(accIdDest, amount); 	//alors versement
+				} else {
+					throw new RuntimeException("Le montant doit être supérieur à 0.");
+				}				
+			}
+			else {
+				throw new RuntimeException("Virement impossible");
+			}
+		}
 	}
 
 	/**
@@ -189,13 +145,7 @@ public class IBankBusinessImpl implements IBankBusiness {
 	 */
 	@Override
 	public ArrayList<Transaction> listTransactions(long accountId) {
-		try {
-			return consultAccount(accountId).getListTransactions();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return consultAccount(accountId).getListTransactions();
 	}
 	
 	/**
@@ -232,7 +182,7 @@ public class IBankBusinessImpl implements IBankBusiness {
 				return true;
 			} 
 		}
-		return false;
+		throw new RuntimeException("Le compte n'existe pas.");
 	}
 	
 	/**

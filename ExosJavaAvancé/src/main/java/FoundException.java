@@ -8,17 +8,19 @@ public class FoundException {
 		Date date = null;
 		Date today = new Date();
 		
-		try {
-			System.out.println(date.getClass().getName());
-		} catch (Exception e ){
-			System.out.println("Ah, problème : " + e);
-		}
+		//Pour afficher chaque date, créer un tableau avec toutes les dates et faire une boucle dessus avec un try/catch à l'intérieur
 		
-		try {
-			System.out.println(today.getClass().getName());
-		} catch (Exception e ){
-			System.out.println("Ah, problème sur : " + e);
-		}
+//		try {
+//			System.out.println(date.getClass().getName());
+//		} catch (Exception e ){
+//			System.out.println("Ah, problème : " + e);
+//		}
+//		
+//		try {
+//			System.out.println(today.getClass().getName());
+//		} catch (Exception e ){
+//			System.out.println("Ah, problème sur : " + e);
+//		}
 		
 		//1.2 -- ajouter un try/catch sur un exercice précédent
 		jeu();
@@ -59,7 +61,8 @@ public class FoundException {
 				System.out.println("Bien joué ! Trouvé en " + count + " coups ! Voulez vous rejouer ? O/N");
 
 			} catch(Exception e) {
-				System.out.println("Exception : " + e);
+				System.out.println("Vous n'avez pas saisi un nombre : " + e);
+				//e.printStackTrace();
 			} finally {
 				//save answer to know if loop continue or break
 				answer = scan.next();
